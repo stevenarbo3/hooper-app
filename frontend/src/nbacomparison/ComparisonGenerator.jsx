@@ -1,6 +1,7 @@
 import 'react'
 import { useState, useEffect} from 'react'
 import { Comparison } from './Comparison'
+import { useApi } from '../utils/api'
 export function ComparisonGenerator() {
     const [comparison, setComparison] = useState(null)
     const [isLoading, setIsLoading] = useState(false)
@@ -8,11 +9,49 @@ export function ComparisonGenerator() {
     const [quota, setQuota] = useState(null)
     const [era, setEra] = useState("all-time")
 
-    const fetchQuota = async () => {}
-    
-    const generateComparison = async () => {}
+    const {makeRequest} = useApi()
 
-    const getNextResetTime = async () => {}
+    useEffect(() => {
+        fetchQuota()
+    }, [])
+
+    const fetchQuota = async () => {
+        try {
+            const data = await makeRequest('quota')
+            setQuota(data)
+        } 
+        catch (err) {
+            console.log(err)
+        }
+    }
+    
+    const generateComparison = async () => {
+        setIsLoading(true)
+        setError(null)
+
+        try {
+            const data = await makeRequest('generate-comparison', {
+                method: 'POST',
+                body: JSON.stringify({era})
+                }
+            )
+            setComparison(data)
+            fetchQuota()
+        }
+        catch (err) {
+            setError(err.message || 'Failed to generate comparison')
+        }
+        finally {
+            setIsLoading(false)
+        }
+    }
+
+    const getNextResetTime = async () => {
+        if (!quota?.last_reset_date) return null
+        const resetDate = new Date(quota.last_reset_date)
+        resetDate.setHours(resetDate.getHours() + 24)
+        return resetDate
+    }
 
 
 
@@ -23,7 +62,7 @@ export function ComparisonGenerator() {
             <div className='quota-display'>
                 <p>Comparisons remaining today: {quota?.quota_remaining || 0}</p>
                 {quota?.quota_remaining === 0 && (
-                    <p>Next reset: {0}</p>
+                    <p>Next reset: {getNextResetTime()?.toLocaleString()}</p>
                 )}
             </div>
 
@@ -42,11 +81,12 @@ export function ComparisonGenerator() {
                 <option value="1990s">1990s</option>
                 <option value="1980s">1980s</option>
             </select>
-        </div>
+            </div>
 
             <button
                 onClick={generateComparison}
                 disabled={isLoading || quota?.quota_remaining === 0}
+                // disabled={false}
                 className='generate-button'
             >
                 {isLoading ? 'Generating...' : 'Generate Comparison'}

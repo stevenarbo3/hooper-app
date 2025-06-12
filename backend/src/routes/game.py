@@ -33,16 +33,16 @@ class GameRequest(StatLine):
     
 
 @router.post('/generate-comparison')
-async def generate_comparison(request: ComparisonRequest, db: Session = Depends(get_db)):
+async def generate_comparison(request: ComparisonRequest, request_obj: Request, db: Session = Depends(get_db)):
     try:
-        user_details = authenticate_and_get_user_details(request)
+        user_details = authenticate_and_get_user_details(request_obj)
         user_id = user_details.get('user_id')
         if user_id is None:
             raise HTTPException(status_code=401, detail='User ID not found in authentication details')
         
         quota = get_comparison_quota(db, user_id)
         if not quota:
-            create_comparison_quota(db, user_id)
+            quota = create_comparison_quota(db, user_id)
             
         quota = reset_quota_if_needed(db, quota)
         
