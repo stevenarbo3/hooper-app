@@ -13,14 +13,14 @@ from ..ai_generator import generate_comparison_with_ai
 from ..utils import authenticate_and_get_user_details
 from ..database.models import get_db
 import json
-from datetime import datetime
+from datetime import datetime, date
 
 router = APIRouter()
 
 class StatLine(BaseModel):
-    points: float
-    assists: float
-    rebounds: float
+    points: int
+    assists: int
+    rebounds: int
 
 class ComparisonRequest(StatLine):
     era: str
@@ -28,8 +28,11 @@ class ComparisonRequest(StatLine):
     class Config:
         json_schema_extra = {'example': {'era': 'All-Time'}}
         
-class GameRequest(StatLine):
-    game_date: datetime
+class GameRequest(BaseModel):
+    points: int
+    assists: int
+    rebounds: int
+    game_date: date
     
 
 @router.post('/generate-comparison')
@@ -73,9 +76,9 @@ async def generate_comparison(request: ComparisonRequest, request_obj: Request, 
         raise HTTPException(status_code=400, detail=str(e))
     
 @router.post('/game')
-async def create_game_route(request: GameRequest, db: Session = Depends(get_db)):
+async def create_game_route(request: GameRequest, request_obj: Request, db: Session = Depends(get_db)):
     try:
-        user_details = authenticate_and_get_user_details(request)
+        user_details = authenticate_and_get_user_details(request_obj)
         user_id = user_details.get('user_id')
         
         new_game = create_game(

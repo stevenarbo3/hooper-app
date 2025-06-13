@@ -16,7 +16,7 @@ export const useApi = () => {
             ...defaultOptions,
             ...options
         })
-
+        
         if (!response.ok) {
             const errorData = await response.json().catch(() => null)
             if (response.status === 429) {
