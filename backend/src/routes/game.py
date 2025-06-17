@@ -7,7 +7,8 @@ from ..database.db import (
     create_game,
     create_comparison_quota,
     reset_quota_if_needed,
-    get_user_games
+    get_user_games,
+    get_user_game_averages
 )
 from ..ai_generator import generate_comparison_with_ai
 from ..utils import authenticate_and_get_user_details
@@ -17,12 +18,7 @@ from datetime import datetime, date
 
 router = APIRouter()
 
-class StatLine(BaseModel):
-    points: int
-    assists: int
-    rebounds: int
-
-class ComparisonRequest(StatLine):
+class ComparisonRequest(BaseModel):
     era: str
     
     class Config:
@@ -37,9 +33,11 @@ class GameRequest(BaseModel):
 
 @router.post('/generate-comparison')
 async def generate_comparison(request: ComparisonRequest, request_obj: Request, db: Session = Depends(get_db)):
+    
     try:
         user_details = authenticate_and_get_user_details(request_obj)
         user_id = user_details.get('user_id')
+        
         if user_id is None:
             raise HTTPException(status_code=401, detail='User ID not found in authentication details')
         
@@ -49,10 +47,21 @@ async def generate_comparison(request: ComparisonRequest, request_obj: Request, 
             
         quota = reset_quota_if_needed(db, quota)
         
-        if quota.remaining_quota <= 0:
+        if quota.quota_remaining <= 0: #type: ignore
             raise HTTPException(status_code=429, detail='quota exhausted')
         
-        comparison_data = generate_comparison_with_ai(request.era, request.points, request.rebounds, request.assists)
+        print('\n\n\n ----- ----- \n\n\n')
+        
+        
+        avg_stats = get_user_game_averages(db, user_id)
+        
+        if avg_stats is None:
+            raise HTTPException(status_code=400, detail='No games logged')
+        
+        print(f'\n\n\n ----- {avg_stats} ----- \n\n\n')
+        
+        
+        comparison_data = generate_comparison_with_ai(request.era, avg_stats['avg_points'], avg_stats['avg_rebounds'], avg_stats['avg_assists'])
         
         new_comparison = create_comparison(
             db=db,
@@ -61,7 +70,7 @@ async def generate_comparison(request: ComparisonRequest, request_obj: Request, 
             **comparison_data
         )
         
-        quota.remaining_quota -= 1
+        quota.quota_remaining -= 1 #type: ignore
         db.commit()
         
         return {
@@ -117,6 +126,7 @@ async def my_history(request: Request, db: Session = Depends(get_db)):
 async def get_quota(request: Request, db: Session = Depends(get_db)):
     user_details = authenticate_and_get_user_details(request)
     user_id = user_details.get('user_id')
+    
     
     quota = get_comparison_quota(db, user_id)
     if not quota:

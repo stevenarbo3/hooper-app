@@ -47,7 +47,7 @@ export function ComparisonGenerator() {
     }
 
     const getNextResetTime = async () => {
-        if (!quota?.last_reset_date) return null
+        if (!quota?.last_reset_date ) return null
         const resetDate = new Date(quota.last_reset_date)
         resetDate.setHours(resetDate.getHours() + 24)
         return resetDate

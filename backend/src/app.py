@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
-from .routes import game
+from .routes import game, webhooks
 
 app = FastAPI()
 
@@ -13,3 +13,4 @@ app.add_middleware(
 )
 
 app.include_router(game.router, prefix='/api')
+app.include_router(webhooks.router, prefix='/webhooks')

@@ -1,6 +1,8 @@
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
 from . import models
+
 
 
 def get_comparison_quota(db: Session, user_id):
@@ -72,3 +74,26 @@ def get_user_games(db: Session, user_id):
     return (db.query(models.Game)
             .filter(models.Game.created_by == user_id)
             .all())
+    
+def get_user_game_averages(db: Session, user_id: str):
+    if (db.query(models.Game)
+            .filter(models.Game.created_by == user_id).first()) is None:
+        return None
+    
+    result = (
+        db.query(
+            func.avg(models.Game.points).label("avg_points"),
+            func.avg(models.Game.rebounds).label("avg_rebounds"),
+            func.avg(models.Game.assists).label("avg_assists"),
+        )
+        .filter(models.Game.created_by == user_id)
+        .one()
+    )
+    
+    return {
+        "avg_points": float(result.avg_points) if result.avg_points else 0.0,
+        "avg_rebounds": float(result.avg_rebounds) if result.avg_rebounds else 0.0,
+        "avg_assists": float(result.avg_assists) if result.avg_assists else 0.0,
+    }
+    
+            

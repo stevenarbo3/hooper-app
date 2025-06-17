@@ -12,10 +12,12 @@ export const useApi = () => {
             }
         }
 
+
         const response = await fetch(`http://localhost:8000/api/${endpoint}`, {
             ...defaultOptions,
             ...options
         })
+
         
         if (!response.ok) {
             const errorData = await response.json().catch(() => null)

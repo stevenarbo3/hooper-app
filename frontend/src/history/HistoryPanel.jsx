@@ -1,18 +1,32 @@
 import 'react'
 import {useState, useEffect} from 'react'
 import { Game } from './Game'
+import { useApi } from '../utils/api'
 
 export function HistoryPanel() {
     const [history, setHistory] = useState([])
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState(null)
 
+    const {makeRequest} = useApi()
+
     useEffect(() => {
         fetchHistory()
     }, [])
 
     const fetchHistory = async () => {
-        setIsLoading(false)
+        setIsLoading(true)
+        setError(null)
+
+        try {
+            const data = await makeRequest('my-history')
+            setHistory(data.games)
+        } catch (err) {
+            setError('Failed to load history')
+        } finally {
+            setIsLoading(false)
+        }
+        
     }
 
     if (isLoading) {
