@@ -61,4 +61,14 @@ python server.py
 
 **This step is only needed when creating your account. After you have an account you can run the app without ngrok.**
 
----
+## Future Goals
+
+* **Advanced Visualizations**
+  Add charts and graphs to break down stats by game, opponent, and trend lines over time. 
+
+* **Team & Player Management**
+  Support team rosters, invite teammates, and track individual player performance within a team.
+
+* **Social Sharing & Leaderboards**
+  Let users compare stats with friends and share highlights on social media.
+
