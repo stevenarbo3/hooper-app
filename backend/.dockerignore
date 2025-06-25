@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg
+*.egg-info/
+.env
+
+# Conda
+*.conda
+*.lock
+
+# Build + OS
+build/
+dist/
+.DS_Store
+*.log
+
+# Git
+.git
+.gitignore

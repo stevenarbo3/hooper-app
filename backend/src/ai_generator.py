@@ -12,6 +12,7 @@ def generate_comparison_with_ai(era: str, points: float, rebounds: float , assis
     system_prompt = '''You are an expert NBA analyst.
     Your task is to generate NBA player comparisons.
     The comparison should be appropriate for the specified stats and era.
+    Pick more deep cuts then extremely popular players when you can.
     
     For 1980s: Pick 1 player who primarily played in the decade of 1980 to 1989.
     For 1990s: Pick 1 player who primarily played in the decade of 1990 to 1999.
