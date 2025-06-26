@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useApi } from '../utils/api.js'
 import { Link } from 'react-router-dom'
-import { useAuth } from '@clerk/clerk-react'
+import { useUser } from '@clerk/clerk-react'
 
 export function Dashboard() {
     const [userStats, setUserStats] = useState(null)
@@ -10,9 +10,10 @@ export function Dashboard() {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
     const { makeRequest } = useApi()
-    const { user } = useAuth()
+    const { user } = useUser()
 
     useEffect(() => {
+
         const fetchDashboardData = async () => {
             try {
                 setLoading(true)
@@ -102,7 +103,7 @@ export function Dashboard() {
             {/* Quick Actions */}
             <div className="quick-actions">
                 <Link to="/logstats" className="action-card">
-                    <div className="action-icon">Stats</div>
+                    <div className="action-icon">Track</div>
                     <h3>Log New Game</h3>
                     <p>Record your latest basketball stats</p>
                 </Link>
