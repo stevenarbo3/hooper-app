@@ -6,18 +6,18 @@ Hooper is a full-stack basketball stat tracking app built with React, FastAPI, a
 
 ## 🚀 Features
 
-* Log game stats (points, rebounds, assists, etc.)
-* Visualize your performance over time
-* Generate AI-based comparisons and feedback
-* Quota system for AI usage via webhook (requires ngrok)
+- Log game stats (points, rebounds, assists, etc.)
+- Visualize your performance over time
+- Generate AI-based comparisons and feedback
+- Quota system for AI usage via webhook (requires ngrok)
 
 ---
 
 ## 🛠 Tech Stack
 
-* **Frontend:** React + Vite
-* **Backend:** FastAPI + SQLAlchemy + OpenAI API
-* **Other:** Ngrok (for webhook support), Conda (for Python env)
+- **Frontend:** React + Vite
+- **Backend:** FastAPI + SQLAlchemy + OpenAI API
+- **Other:** Ngrok (for webhook support), Conda (for Python env)
 
 ---
 
@@ -31,6 +31,17 @@ Follow these steps to set up Hooper locally:
 git clone https://github.com/<your-username>/Hooper.git
 cd Hooper
 ```
+
+### With Docker:
+
+```bash
+docker compose build .
+docker compose up
+```
+
+plus webhook setup below
+
+### Or Without:
 
 ### 2. Frontend Setup
 
@@ -51,24 +62,24 @@ python server.py
 
 ### 4. Webhook Setup (Quota Management)
 
-* [Sign up at ngrok.com](https://ngrok.com/) and install the CLI.
-* Start a tunnel to your backend:
+- [Sign up at ngrok.com](https://ngrok.com/) and install the CLI.
+- Start a tunnel to your backend:
 
   ```bash
   ngrok http 8000
   ```
-* Update your `.env` file or webhook settings to use the generated ngrok URL.
+
+- Update your `.env` file or webhook settings to use the generated ngrok URL.
 
 **This step is only needed when creating your account. After you have an account you can run the app without ngrok.**
 
 ## Future Goals
 
-* **Advanced Visualizations**
-  Add charts and graphs to break down stats by game, opponent, and trend lines over time. 
+- **Advanced Visualizations**
+  Add charts and graphs to break down stats by game, opponent, and trend lines over time.
 
-* **Team & Player Management**
+- **Team & Player Management**
   Support team rosters, invite teammates, and track individual player performance within a team.
 
-* **Social Sharing & Leaderboards**
+- **Social Sharing & Leaderboards**
   Let users compare stats with friends and share highlights on social media.
-
