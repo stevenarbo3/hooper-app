@@ -32,6 +32,14 @@ git clone https://github.com/<your-username>/Hooper.git
 cd Hooper
 ```
 
+### Create environment variables
+
+**In frontend .env:**
+  - create vite clerk publishable key
+
+**In backend .env:**
+  - create clerk sercret key, jwt key, OpenAI api key, and clerk webhook secret
+
 ### With Docker:
 
 ```bash
@@ -83,3 +91,6 @@ python server.py
 
 - **Social Sharing & Leaderboards**
   Let users compare stats with friends and share highlights on social media.
+
+- **More Stats**
+  Add more stats to log such as steals, turnovers, field goals attempted / made, etc.
