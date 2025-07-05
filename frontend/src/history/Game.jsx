@@ -7,7 +7,6 @@ export function Game({ game, formatDate }) {
         <div className="game-card">
             <div className="game-header">
                 <div className="game-date">{gameDate}</div>
-                <div className="game-id">#{game.id}</div>
             </div>
             
             <div className="game-stats">

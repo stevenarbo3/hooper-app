@@ -23,7 +23,7 @@ def create_comparison_quota(db: Session, user_id):
 def reset_quota_if_needed(db: Session, quota: models.ComparisonQuota):
     now = datetime.now()
     if now - quota.last_reset_date > timedelta(hours=24): # type: ignore
-        quota.remaining_quota = 10
+        quota.remaining_quota = 3
         quota.last_reset_date = datetime.now() # type: ignore
         db.commit()
         db.refresh(quota)
