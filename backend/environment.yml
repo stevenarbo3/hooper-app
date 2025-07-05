@@ -19,3 +19,4 @@ dependencies:
       - pydantic
       - pyjwt
       - python-dateutil
+      - nba_api

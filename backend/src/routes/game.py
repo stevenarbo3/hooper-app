@@ -15,6 +15,7 @@ from ..utils import authenticate_and_get_user_details
 from ..database.models import get_db
 import json
 from datetime import datetime, date
+from nba_api.stats.static import players
 
 router = APIRouter()
 
@@ -29,6 +30,17 @@ class GameRequest(BaseModel):
     assists: int
     rebounds: int
     game_date: date
+    
+def get_player_headshot_url(player_name):
+    player_data = players.find_players_by_full_name(player_name) # returns list of players that match player_name
+    player_id = player_data[0]['id'] 
+    
+    url = f'https://ak-static.cms.nba.com/wp-content/uploads/headshots/nba/latest/260x190/{player_id}.png'
+    
+    return url
+
+    
+    
     
 
 @router.post('/generate-comparison')
@@ -50,18 +62,17 @@ async def generate_comparison(request: ComparisonRequest, request_obj: Request, 
         if quota.quota_remaining <= 0: #type: ignore
             raise HTTPException(status_code=429, detail='quota exhausted')
         
-        print('\n\n\n ----- ----- \n\n\n')
-        
         
         avg_stats = get_user_game_averages(db, user_id)
         
         if avg_stats is None:
             raise HTTPException(status_code=400, detail='No games logged')
         
-        print(f'\n\n\n ----- {avg_stats} ----- \n\n\n')
         
+        comparison_data = generate_comparison_with_ai(request.era, avg_stats['avg_points'], avg_stats['avg_rebounds'], avg_stats['avg_assists'])    
         
-        comparison_data = generate_comparison_with_ai(request.era, avg_stats['avg_points'], avg_stats['avg_rebounds'], avg_stats['avg_assists'])
+        player_name = comparison_data['player_name']
+        player_headshot_url = get_player_headshot_url(player_name)
         
         new_comparison = create_comparison(
             db=db,
@@ -78,7 +89,8 @@ async def generate_comparison(request: ComparisonRequest, request_obj: Request, 
             'era': request.era,
             'player_name': new_comparison.player_name,
             'explanation': new_comparison.explanation,
-            'timestamp': new_comparison.date_created.isoformat()
+            'timestamp': new_comparison.date_created.isoformat(),
+            'player_headshot_url': player_headshot_url
         }
         
     except Exception as e:

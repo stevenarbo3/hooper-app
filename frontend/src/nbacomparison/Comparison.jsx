@@ -25,6 +25,14 @@ export function Comparison({ comparison }) {
                 <div className="player-match">
                     <h3>NBA Player Match</h3>
                     <div className="player-name">{comparison.player_name}</div>
+                    <img 
+                        src={comparison.player_headshot_url}
+                        alt="Player Headshot"
+                        onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = "/default-placeholder.png";
+                        }}
+                        />
                 </div>
 
                 <div className="comparison-explanation">

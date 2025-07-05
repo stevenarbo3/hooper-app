@@ -35,10 +35,12 @@ cd Hooper
 ### Create environment variables
 
 **In frontend .env:**
-  - create vite clerk publishable key
+
+- create vite clerk publishable key
 
 **In backend .env:**
-  - create clerk sercret key, jwt key, OpenAI api key, and clerk webhook secret
+
+- create clerk secret key, jwt key, OpenAI api key, and clerk webhook secret
 
 ### With Docker:
 
